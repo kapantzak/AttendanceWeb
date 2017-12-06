@@ -1,38 +1,83 @@
 body {
-    background-color: #ececec;
-    padding: 20px;
-    margin: 0;
-  }
-  h1, h2, p, ul, li {
-    font-family: sans-serif;
-  }
-  ul.header li {
-    display: inline;
-    list-style-type: none;
-    margin: 0;
-  }
-  ul.header {
-    background-color: #111;
-    padding: 0;
-  }
-  ul.header li a {
-    color: #FFF;
-    font-weight: bold;
-    text-decoration: none;
-    padding: 20px;
-    display: inline-block;
-  }
-  .content {
-    background-color: #FFF;
-    padding: 20px;
-  }
-  .content h2 {
-    padding: 0;
-    margin: 0;
-  }
-  .content li {
-    margin-bottom: 10px;
-  }
-  .active {
-    background-color: #0099FF;
-  }
+    background-color: #fafafa;
+    font-size: 16px;
+    color: #444444; 
+}
+a, a:visited {
+  color: #293a4c; }
+
+a:hover, a:focus, a:active {
+  color: #293a4c;
+  text-decoration: none; }
+
+.nav-pills .nav-item.show .nav-link, .nav-pills .nav-link.active {
+  background-color: #293a4c; }
+.sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  padding: 20px;
+  padding-left: 0;
+  padding-right: 0;
+  z-index: 1000;
+  overflow-x: hidden;
+  overflow-y: auto;
+  /* Scrollable contents if viewport is shorter than content. */
+  border-right: 1px solid #eee;
+  background: #344861; }
+.clear {
+  clear: both; }
+.sidebar a {
+  width: 100%;
+  display: inline-block;
+  color: #fff;
+  text-transform: uppercase;
+  font-size: .8rem;
+  letter-spacing: .2rem;
+  padding: .75rem 1rem; }
+.sidebar em {
+  font-size: 1rem; }
+.sidebar h1 {
+  color: #fff;
+  border: none;
+  font-size: 0.9rem;
+  padding: 0rem 1rem;
+  text-transform: uppercase;
+  letter-spacing: .2rem; }
+.sidebar .site-title {
+  margin-top: .5rem;
+  margin-bottom: 1.75rem; }
+.sidebar .site-title a {
+  font-size: .9rem;
+  padding-left: 0;
+  padding-right: 0;
+  cursor: pointer; }
+.sidebar .site-title a:hover {
+  background: none !important; }
+.sidebar .nav {
+  margin-bottom: 20px; }
+.sidebar .nav-item {
+  width: 100%; }
+.sidebar .nav-item + .nav-item {
+  margin-left: 0; }
+.sidebar .nav-link {
+  border-radius: 0; }
+.sidebar .logout-button {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  width: 85%;
+  text-align: center;
+  border-radius: .3rem; }
+
+.sidebar a:focus, .sidebar a:visited, .sidebar a:hover, .sidebar a:active,
+a.active {
+  background-color: #293a4c !important; }
+
+.page-header {  
+  margin-top: 0rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #eee;
+  height: auto; }
