@@ -1,14 +1,18 @@
 import * as React from 'react';
-// import { DefaultTable } from './Helpers/DefaultTable';
-import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist/react-bootstrap-table.min.css';
 import * as students from './Models/Students';
+import { StudentsTable } from './Helpers/StudentsTable';
 
-let getStudents = ():students.IStudent[] => {
+let getStudents = (): students.IStudent[] => {
     return [
         {
             ID: 0,
             FirstName: 'John',
+            LastName: 'Doe'
+        },
+        {
+            ID: 1,
+            FirstName: 'Mary',
             LastName: 'Doe'
         }
     ];
@@ -23,11 +27,7 @@ class Students extends React.Component {
                 <h2>Students</h2>
                 <p>This is the students list page</p>
                 <div>
-                    <BootstrapTable data={studentsCollection}>
-                        <TableHeaderColumn dataField='ID' isKey={ true }>ID</TableHeaderColumn>
-                        <TableHeaderColumn dataField='FirstName'>First Name</TableHeaderColumn>
-                        <TableHeaderColumn dataField='LastName'>Last Name</TableHeaderColumn>
-                    </BootstrapTable>
+                    <StudentsTable data={studentsCollection} />                    
                 </div>
             </div>
         );
