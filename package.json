@@ -2,6 +2,7 @@
   "name": "attendance_react",
   "version": "0.1.1",
   "private": true,
+  "proxy": "http://localhost:24940",
   "dependencies": {
     "@types/datatables.net": "^1.10.8",
     "@types/datatables.net-buttons": "^1.4.0",
