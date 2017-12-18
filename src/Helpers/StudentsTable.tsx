@@ -6,32 +6,16 @@ import * as students from './../Models/Students';
 interface IProps {
     data: students.IStudent[];
 }
-interface IState {
+interface IState {}
 
-}
-
-function onAfterInsertRow(row: any) {
-    let newRowStr = '';
-    for (const prop in row) {
-        newRowStr += prop + ': ' + row[prop] + ' \n';
-    }
-    alert('The new row is:\n ' + newRowStr);
-}
-
-function onAfterDeleteRow(rowKeys: any) {
-    alert('The rowkey you drop: ' + rowKeys);
-}
-
-const options = {
-    afterInsertRow: onAfterInsertRow,
-    onAfterDeleteRow: onAfterDeleteRow
-};
+const options = {};
 
 export class StudentsTable extends React.Component<IProps, IState> {    
-    render() {        
+    render() {  
+        console.log(this.props.data);      
         return (
             <div className="mod-students-table-holder">
-                <BootstrapTable data={this.props.data} insertRow={true} deleteRow={true} selectRow={{mode:"checkbox"}} options={options} striped hover condensed>
+                <BootstrapTable data={this.props.data} insertRow={false} deleteRow={false} options={options} striped hover condensed>
                     <TableHeaderColumn dataField="ID" isKey={true} width="80" className="text-center" columnClassName="text-center">ID</TableHeaderColumn>
                     <TableHeaderColumn dataField="FirstName">First Name</TableHeaderColumn>
                     <TableHeaderColumn dataField="LastName">Last Name</TableHeaderColumn>
