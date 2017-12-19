@@ -3,6 +3,7 @@ import { Component } from 'react';
 import { Route, NavLink, HashRouter } from 'react-router-dom';
 import Dashboard from './Dashboard';
 import Students from './Students';
+import QRCode from './QRCode';
 // import { Button } from 'reactstrap';
 
 class Main extends Component {
@@ -17,7 +18,8 @@ class Main extends Component {
                             
                             <ul className="nav nav-pills flex-column sidebar-nav">
                                 <li className="nav-item"><NavLink exact to="/"><i className="fa fa-dashboard"></i> Dashboard</NavLink></li>
-                                <li className="nav-item"><NavLink to="/students"><i className="fa fa-chevron-right"></i> Students</NavLink></li>                                
+                                <li className="nav-item"><NavLink to="/students"><i className="fa fa-chevron-right"></i> Students</NavLink></li>
+                                <li className="nav-item"><NavLink to="/qrcode"><i className="fa fa-qrcode"></i> QR Code</NavLink></li>
                             </ul>                            
                         </nav>
 
@@ -33,6 +35,7 @@ class Main extends Component {
                                 <div className="col-sm-12">
                                     <Route exact path="/" component={Dashboard}/>
                                     <Route path="/students" component={Students}/>
+                                    <Route path="/qrcode" component={QRCode}/>
                                 </div>                                
                             </section>
 
