@@ -4,10 +4,75 @@ import { Route, NavLink, HashRouter } from 'react-router-dom';
 import Dashboard from './Dashboard';
 import Students from './Students';
 import QRCode from './QRCode';
-// import { Button } from 'reactstrap';
+import { Button } from 'reactstrap';
+import * as ses from './Helpers/sessionHelper';
 
-class Main extends Component {
+interface IMainProps {}
+
+interface IMainState {
+    isLoggedIn: boolean,    
+    error: any
+}
+
+class Main extends Component<IMainProps,IMainState> {
+
+    constructor(props: any) {
+        super(props);
+        this.state = {
+            isLoggedIn: false,            
+            error: null
+        }
+        this.onBtnLoginClick = this.onBtnLoginClick.bind(this);
+    }
+
+    getToken(username: string, password: string) {
+
+        let headers: Headers = new Headers();        
+        headers.append("Content-Type", "application/json");
+
+        let body = {
+            Username: username,
+            Password: password
+        };
+
+        fetch("http://localhost:24940/api/Token", {
+            method: "post",
+            headers: headers,
+            body: JSON.stringify(body)
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.text();
+            } else {
+                throw new Error("Something went wrong...");
+            }
+        })
+        .then(text => {
+            
+            ses.saveAuthTokenToSession(text);
+
+            this.setState({
+                isLoggedIn: true
+            })
+        })
+        .catch(error => this.setState({ error }));
+    }
+
+    onBtnLoginClick() {
+        this.getToken("test","test");
+    }
+
     render() {
+
+        const { isLoggedIn } = this.state;
+        
+        if (isLoggedIn !== true) {
+            return (
+                <div><Button color="success" onClick={() => this.onBtnLoginClick()}>Login</Button></div>
+            )
+        }
+
+        // Logged user
         return (
             <HashRouter>
                 <div className="container-fluid">
@@ -27,7 +92,10 @@ class Main extends Component {
 
                             <header className="page-header row justify-center">
                                 <div className="col-sm-12">                                    
-                                    test
+                                    <span className="pull-right">                                        
+                                        <span>user@example.com</span>
+                                        <span className="marginLeft-md"><i className="fa fa-user-circle fa-lg"></i></span>
+                                    </span>
                                 </div>                                
                             </header>
 
