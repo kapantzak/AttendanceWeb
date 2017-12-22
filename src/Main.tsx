@@ -6,6 +6,7 @@ import Students from './Students';
 import QRCode from './QRCode';
 import { Button } from 'reactstrap';
 import * as ses from './Helpers/sessionHelper';
+import * as api from './Helpers/apiHelper';
 
 interface IMainProps {}
 
@@ -27,35 +28,34 @@ class Main extends Component<IMainProps,IMainState> {
 
     getToken(username: string, password: string) {
 
-        let headers: Headers = new Headers();        
-        headers.append("Content-Type", "application/json");
-
+        let headers = api.getHeaders(api.ContentType.json, false);
+        
         let body = {
             Username: username,
             Password: password
         };
 
-        fetch("http://localhost:24940/api/Token", {
-            method: "post",
-            headers: headers,
-            body: JSON.stringify(body)
-        })
-        .then(response => {
-            if (response.ok) {
-                return response.text();
-            } else {
-                throw new Error("Something went wrong...");
-            }
-        })
-        .then(text => {
-            
-            ses.saveAuthTokenToSession(text);
-
-            this.setState({
-                isLoggedIn: true
+        if (headers !== null) {
+            fetch("http://localhost:24940/api/Token", {
+                method: "post",
+                headers: headers,
+                body: JSON.stringify(body)
             })
-        })
-        .catch(error => this.setState({ error }));
+            .then(response => {
+                if (response.ok) {
+                    return response.text();
+                } else {
+                    throw new Error("Something went wrong...");
+                }
+            })
+            .then(text => {                
+                ses.saveAuthTokenToSession(text.replace(/\"/g, ''));    
+                this.setState({
+                    isLoggedIn: true
+                })
+            })
+            .catch(error => this.setState({ error }));
+        }        
     }
 
     onBtnLoginClick() {

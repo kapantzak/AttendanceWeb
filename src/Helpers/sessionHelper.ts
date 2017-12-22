@@ -43,5 +43,6 @@ export function saveAuthTokenToSession(token: string): void {
  * Get saved token
  */
 export function getAuthToken(): string | null {
-    return getSessionStorage("token");
+    let t = getSessionStorage("token");
+    return (t !== null) ? t.replace(/\"/g, "") : null;
 }
