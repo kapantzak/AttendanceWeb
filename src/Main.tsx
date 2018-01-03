@@ -7,6 +7,7 @@ import QRCode from './QRCode';
 import { Button } from 'reactstrap';
 import * as ses from './Helpers/sessionHelper';
 import * as api from './Helpers/apiHelper';
+import * as Config from './config.dev';
 
 interface IMainProps {}
 
@@ -20,7 +21,7 @@ class Main extends Component<IMainProps,IMainState> {
     constructor(props: any) {
         super(props);
         this.state = {
-            isLoggedIn: false,            
+            isLoggedIn: ses.getAuthToken() !== null,            
             error: null
         }
         this.onBtnLoginClick = this.onBtnLoginClick.bind(this);
@@ -36,7 +37,7 @@ class Main extends Component<IMainProps,IMainState> {
         };
 
         if (headers !== null) {
-            fetch("http://localhost:24940/api/Token", {
+            fetch(`${Config.serverUrl}api/Token`, {
                 method: "post",
                 headers: headers,
                 body: JSON.stringify(body)
@@ -62,6 +63,13 @@ class Main extends Component<IMainProps,IMainState> {
         this.getToken("test","test");
     }
 
+    logout() {
+        ses.deleteAuthToken();
+        this.setState({
+            isLoggedIn: false
+        });
+    }
+
     render() {
 
         const { isLoggedIn } = this.state;
@@ -83,7 +91,7 @@ class Main extends Component<IMainProps,IMainState> {
                             
                             <ul className="nav nav-pills flex-column sidebar-nav">
                                 <li className="nav-item"><NavLink exact to="/"><i className="fa fa-dashboard"></i> Dashboard</NavLink></li>
-                                <li className="nav-item"><NavLink to="/students"><i className="fa fa-chevron-right"></i> Students</NavLink></li>
+                                <li className="nav-item"><NavLink to="/students"><i className="fa fa-graduation-cap"></i> Students</NavLink></li>
                                 <li className="nav-item"><NavLink to="/qrcode"><i className="fa fa-qrcode"></i> QR Code</NavLink></li>
                             </ul>                            
                         </nav>
@@ -95,6 +103,9 @@ class Main extends Component<IMainProps,IMainState> {
                                     <span className="pull-right">                                        
                                         <span>user@example.com</span>
                                         <span className="marginLeft-md"><i className="fa fa-user-circle fa-lg"></i></span>
+
+                                        <Button color="default" onClick={() => this.logout()}>Logout</Button>
+
                                     </span>
                                 </div>                                
                             </header>

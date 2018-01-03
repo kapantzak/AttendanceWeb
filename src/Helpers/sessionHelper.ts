@@ -46,3 +46,10 @@ export function getAuthToken(): string | null {
     let t = getSessionStorage("token");
     return (t !== null) ? t.replace(/\"/g, "") : null;
 }
+
+/**
+ * Remove item token
+ */
+export function deleteAuthToken(): void {
+    sessionStorage.removeItem("token");
+}

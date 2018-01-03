@@ -3,16 +3,16 @@ import 'react-bootstrap-table/dist/react-bootstrap-table.min.css';
 import * as coursesMod from './Models/Courses';
 import { CoursesTable } from './Helpers/CoursesTable';
 import * as api from './Helpers/apiHelper';
-// import { Button } from 'reactstrap';
+import * as Config from './config.dev';
 
 interface IQRCodeProps {
     svg: string,
-    courses: coursesMod.ICourse[],
+    courses: coursesMod.ICourse[]    
 }
 
 interface IQRCodeState {
     svg: string,
-    courses: coursesMod.ICourse[],
+    courses: coursesMod.ICourse[],    
     isLoading: boolean,
     error: any
 }
@@ -23,10 +23,12 @@ class QRCode extends React.Component<IQRCodeProps,IQRCodeState> {
         super(props);
         this.state = {
             svg: "",
-            courses: [],
+            courses: [],            
             isLoading: false,
             error: null
         }
+
+        this.handleRowSelect = this.handleRowSelect.bind(this);
     }
 
     componentDidMount() {
@@ -36,7 +38,7 @@ class QRCode extends React.Component<IQRCodeProps,IQRCodeState> {
         let headers = api.getHeaders(api.ContentType.text);     
         
         if (headers !== null) {
-            fetch("http://localhost:24940/api/Courses", {
+            fetch(`${Config.serverUrl}api/Courses`, {
                 method: "get",
                 headers: headers
             })
@@ -62,24 +64,29 @@ class QRCode extends React.Component<IQRCodeProps,IQRCodeState> {
             })
             .catch(error => this.setState({ error, isLoading: false }));
         }
-        
-        
-        // fetch("http://localhost:24940/api/QRCode/1", {
-        //     method: "get",
-        //     headers: headers
-        // })
-        // .then(response => { 
-        //     if (response.ok) {
-        //         return response.text();
-        //     } else {
-        //         throw new Error("Something went wrong...");
-        //     }            
-        // })
-        // .then(text => this.setState({
-        //     svg: text,
-        //     isLoading: false
-        // }))
-        // .catch(error => this.setState({ error, isLoading: false }));
+                
+    }
+
+    handleRowSelect(row: any, isSelected: boolean, e: any) {        
+        let headers = api.getHeaders(api.ContentType.text);     
+        if (headers !== null && row.hasOwnProperty('ID')) {
+            fetch(`${Config.serverUrl}api/QRCode/${row.ID}`, {
+                method: "get",
+                headers: headers
+            })
+            .then(response => { 
+                if (response.ok) {
+                    return response.text();
+                } else {
+                    throw new Error("Something went wrong...");
+                }            
+            })            
+            .then(text => this.setState({
+                svg: text,
+                isLoading: false
+            }))
+            .catch(error => this.setState({ error, isLoading: false }));
+        }        
     }
 
     render() {
@@ -101,7 +108,7 @@ class QRCode extends React.Component<IQRCodeProps,IQRCodeState> {
                     Select a course to generate a new QR Code
                 </div>
                 <div dangerouslySetInnerHTML={{__html: svg}} />
-                <CoursesTable data={courses} />
+                <CoursesTable data={courses} rowSelectionHandler={this.handleRowSelect} />
             </div>
         );
     }
