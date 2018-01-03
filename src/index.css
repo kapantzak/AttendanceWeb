@@ -81,3 +81,15 @@ a.active {
   padding-bottom: 1rem;
   border-bottom: 2px solid #eee;
   height: auto; }
+
+  /* MARGINS */
+
+  .marginLeft-sm {
+    margin-left: 5px;
+  }
+  .marginLeft-md {
+    margin-left: 15px;
+  }
+  .marginLeft-lg {
+    margin-left: 25px;
+  }
