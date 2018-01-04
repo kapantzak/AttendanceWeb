@@ -2,6 +2,7 @@ import * as React from 'react';
 import 'react-bootstrap-table/dist/react-bootstrap-table.min.css';
 import * as coursesMod from './Models/Courses';
 import { CoursesTable } from './Helpers/CoursesTable';
+import { Button } from 'reactstrap';
 import * as api from './Helpers/apiHelper';
 import * as Config from './config.dev';
 
@@ -12,7 +13,8 @@ interface IQRCodeProps {
 
 interface IQRCodeState {
     svg: string,
-    courses: coursesMod.ICourse[],    
+    courses: coursesMod.ICourse[],
+    viewQRCode: boolean,
     isLoading: boolean,
     error: any
 }
@@ -23,12 +25,12 @@ class QRCode extends React.Component<IQRCodeProps,IQRCodeState> {
         super(props);
         this.state = {
             svg: "",
-            courses: [],            
+            courses: [],
+            viewQRCode: false,
             isLoading: false,
             error: null
         }
-
-        this.handleRowSelect = this.handleRowSelect.bind(this);
+        this.generateQRCode = this.generateQRCode.bind(this);        
     }
 
     componentDidMount() {
@@ -67,7 +69,7 @@ class QRCode extends React.Component<IQRCodeProps,IQRCodeState> {
                 
     }
 
-    handleRowSelect(row: any, isSelected: boolean, e: any) {        
+    generateQRCode(row: any) {        
         let headers = api.getHeaders(api.ContentType.text);     
         if (headers !== null && row.hasOwnProperty('ID')) {
             fetch(`${Config.serverUrl}api/QRCode/${row.ID}`, {
@@ -83,15 +85,22 @@ class QRCode extends React.Component<IQRCodeProps,IQRCodeState> {
             })            
             .then(text => this.setState({
                 svg: text,
+                viewQRCode: true,
                 isLoading: false
             }))
             .catch(error => this.setState({ error, isLoading: false }));
-        }        
+        }
+    }
+
+    hideQRCode() {
+        this.setState({
+            viewQRCode: false
+        });
     }
 
     render() {
 
-        const { svg, courses, isLoading, error } = this.state;
+        const { svg, courses, isLoading, viewQRCode, error } = this.state;
 
         if (error) {
             return <div className="alert alert-danger" role="alert">{ error.message }</div>
@@ -107,8 +116,11 @@ class QRCode extends React.Component<IQRCodeProps,IQRCodeState> {
                 <div className="alert alert-info" role="alert">
                     Select a course to generate a new QR Code
                 </div>
-                <div dangerouslySetInnerHTML={{__html: svg}} />
-                <CoursesTable data={courses} rowSelectionHandler={this.handleRowSelect} />
+                <div id="qrCodeHolder_outer" style={(viewQRCode === true) ? { display: "block" } : { display: "none" }}>
+                    <div id="qrCodeHolder_inner" dangerouslySetInnerHTML={{__html: svg}} />
+                    <Button id="btnHideQRCode" color="default" onClick={() => this.hideQRCode()}><i className="fa fa-remove"></i></Button>
+                </div>
+                <CoursesTable data={courses} qrCodeGenerator={this.generateQRCode} />
             </div>
         );
     }

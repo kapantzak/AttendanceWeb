@@ -4,7 +4,7 @@ import { Route, NavLink, HashRouter } from 'react-router-dom';
 import Dashboard from './Dashboard';
 import Students from './Students';
 import QRCode from './QRCode';
-import { Button } from 'reactstrap';
+import { Col, Button, Form, FormGroup, Input } from 'reactstrap';
 import * as ses from './Helpers/sessionHelper';
 import * as api from './Helpers/apiHelper';
 import * as Config from './config.dev';
@@ -12,6 +12,8 @@ import * as Config from './config.dev';
 interface IMainProps {}
 
 interface IMainState {
+    username: string,
+    password: string,
     isLoggedIn: boolean,    
     error: any
 }
@@ -21,10 +23,15 @@ class Main extends Component<IMainProps,IMainState> {
     constructor(props: any) {
         super(props);
         this.state = {
+            username: '',
+            password: '',
             isLoggedIn: ses.getAuthToken() !== null,            
             error: null
         }
         this.onBtnLoginClick = this.onBtnLoginClick.bind(this);
+        this.changeUsername = this.changeUsername.bind(this);
+        this.changePassword = this.changePassword.bind(this);
+        this.validateInputs = this.validateInputs.bind(this);
     }
 
     getToken(username: string, password: string) {
@@ -59,8 +66,8 @@ class Main extends Component<IMainProps,IMainState> {
         }        
     }
 
-    onBtnLoginClick() {
-        this.getToken("test","test");
+    onBtnLoginClick() {        
+        this.getToken(this.state.username,this.state.password);
     }
 
     logout() {
@@ -70,13 +77,57 @@ class Main extends Component<IMainProps,IMainState> {
         });
     }
 
+    changeUsername(e: any) {
+        this.setState({
+            username: e.target.value
+        });
+    }
+
+    changePassword(e: any) {
+        this.setState({
+            password: e.target.value
+        });
+    }
+
+    validateInputs() {
+        return this.state.username.length > 0 && this.state.password.length > 0;
+    }
+
     render() {
 
         const { isLoggedIn } = this.state;
-        
+
         if (isLoggedIn !== true) {
             return (
-                <div><Button color="success" onClick={() => this.onBtnLoginClick()}>Login</Button></div>
+                <div id="mainLoginFormHolder">
+                    <Form id="mainLoginForm">
+                        <FormGroup row>
+                            <Col className="text-center" sm={12}>
+                                <h2 className="site-title"><em className="fa fa-rocket"></em> Attendance Web</h2>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>                        
+                            <Col sm={12}>
+                                <Input type="text" name="username" id="username" placeholder="Username" onChange={this.changeUsername} />
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>                        
+                            <Col sm={12}>
+                                <Input type="password" name="password" id="password" placeholder="Password" onChange={this.changePassword} />
+                            </Col>
+                        </FormGroup>                    
+                        <FormGroup check row>
+                            <Col className="text-center" sm={12}>
+                                <Button color="success" 
+                                    disabled={!this.validateInputs()}
+                                    onClick={(e: any) => { 
+                                        e.preventDefault();
+                                        this.onBtnLoginClick();
+                                    }}>Login</Button>
+                            </Col>
+                        </FormGroup>
+                    </Form>
+                </div>                
             )
         }
 

@@ -93,3 +93,52 @@ a.active {
   .marginLeft-lg {
     margin-left: 25px;
   }
+
+  /* Main login ============================================================== */
+
+  #mainLoginFormHolder {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1050;
+    background-color: rgba(0,0,0,0.7);
+  }
+
+  #mainLoginForm {
+    position: absolute;
+    width: 400px;
+    left: 50%;
+    margin-left: -200px;
+    margin-top: 100px;
+    background-color: #f1f1f1;
+    padding: 50px 30px;
+    box-sizing: border-box;
+  }
+
+  /* QRCode ================================================================== */
+  #qrCodeHolder_outer {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1050;
+    background-color: rgba(0,0,0,0.7);
+  }
+
+  #qrCodeHolder_inner {
+    position: absolute;
+    left: 50%;    
+    margin-left: -290px;
+    margin-top: 100px;
+  }
+
+  #btnHideQRCode {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+    color: #dc3545;
+  }
