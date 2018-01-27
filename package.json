@@ -1,6 +1,6 @@
 {
   "name": "attendance_react",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "private": true,
   "dependencies": {
     "@types/datatables.net": "^1.10.8",
