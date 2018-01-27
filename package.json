@@ -1,11 +1,12 @@
 {
   "name": "attendance_react",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "private": true,
   "dependencies": {
     "@types/datatables.net": "^1.10.8",
     "@types/datatables.net-buttons": "^1.4.0",
     "@types/datatables.net-select": "^1.2.3",
+    "@types/react-bootstrap-table": "^4.1.1",
     "@types/react-router-dom": "^4.2.3",
     "@types/reactstrap": "^5.0.4",
     "autoprefixer": "7.1.2",
@@ -36,6 +37,7 @@
     "postcss-loader": "2.0.6",
     "promise": "8.0.1",
     "react": "^16.2.0",
+    "react-bootstrap-table": "^4.2.0",
     "react-dev-utils": "^4.0.1",
     "react-dom": "^16.2.0",
     "react-router-dom": "^4.2.2",
