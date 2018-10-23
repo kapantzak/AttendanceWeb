@@ -53,3 +53,55 @@ export function getAuthToken(): string | null {
 export function deleteAuthToken(): void {
     sessionStorage.removeItem("token");
 }
+
+/**
+ * Save user id to session
+ * @param userId
+ */
+export function saveUserIdToSession(userId: number): void {
+    setSessionStorage("userId", userId);
+}
+
+/** 
+ * Get user id from session
+*/
+export function getUserId(): number | null {
+    let u = getSessionStorage("userId");
+    return (u !== null) ? parseInt(u.replace(/\"/g, "")) : null;
+}
+
+/**
+ * 
+ * @param userRoles Save user roles to session
+ */
+export function saveUserRolesToSession(userRoles: number[]): void {
+    if (userRoles.length > 0) {
+        setSessionStorage("userRoles", JSON.stringify(userRoles));
+    }    
+}
+
+/** 
+ * Get user roles from session
+*/
+export function getUserRoles(): number[] | null {
+    let u = getSessionStorage("userRoles");
+    return (u !== null) ? JSON.parse(u.replace(/\"/g, "")) : null;
+}
+
+export function getUserRolesObj(): IUserRoles {
+    let roles = getUserRoles();
+    if (roles !== null) {
+        return  {
+            isAdmin: roles.indexOf(1) !== -1,
+            isProfessor: roles.indexOf(2) !== -1,
+            isStudent: roles.indexOf(3) !== -1
+        };
+    }
+    return {};
+}
+
+export interface IUserRoles {
+    isAdmin?: boolean,
+    isProfessor?: boolean,
+    isStudent?: boolean
+}

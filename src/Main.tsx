@@ -4,17 +4,23 @@ import { Route, NavLink, HashRouter } from 'react-router-dom';
 import Dashboard from './Dashboard';
 import Students from './Students';
 import QRCode from './QRCode';
-import { Col, Button, Form, FormGroup, Input } from 'reactstrap';
+import { Col, Button, Form, FormGroup, Input, Alert } from 'reactstrap';
+import { BeatLoader } from 'react-spinners';
 import * as ses from './Helpers/sessionHelper';
 import * as api from './Helpers/apiHelper';
 import * as Config from './config.dev';
+import AttendanceLogs from './AttendanceLogs';
 
 interface IMainProps {}
 
 interface IMainState {
     username: string,
     password: string,
+    userRoles: number[],
+    userRolesObj: ses.IUserRoles,
     isLoggedIn: boolean,    
+    invalidCredentials: boolean,
+    loading: boolean,
     error: any
 }
 
@@ -25,7 +31,11 @@ class Main extends Component<IMainProps,IMainState> {
         this.state = {
             username: '',
             password: '',
-            isLoggedIn: ses.getAuthToken() !== null,            
+            userRoles: [],
+            userRolesObj: {},
+            isLoggedIn: ses.getAuthToken() !== null,
+            invalidCredentials: false,
+            loading: false,
             error: null
         }
         this.onBtnLoginClick = this.onBtnLoginClick.bind(this);
@@ -43,24 +53,39 @@ class Main extends Component<IMainProps,IMainState> {
             Password: password
         };
 
+        this.setState({
+            loading: true
+        })
+
         if (headers !== null) {
             fetch(`${Config.serverUrl}api/Token`, {
                 method: "post",
                 headers: headers,
                 body: JSON.stringify(body)
             })
-            .then(response => {
+            .then(response => {                
                 if (response.ok) {
                     return response.text();
                 } else {
                     throw new Error("Something went wrong...");
                 }
             })
-            .then(text => {                
-                ses.saveAuthTokenToSession(text.replace(/\"/g, ''));    
+            .then(text => {
+                let invalid = text.replace(/\"/g, '') === "InvalidCredentials";
+                let obj = JSON.parse(text);
+                if (!invalid) {                    
+                    ses.saveAuthTokenToSession(obj.token);
+                    ses.saveUserIdToSession(obj.userId);
+                    ses.saveUserRolesToSession(obj.userRoles);
+                }       
+                let sesUserRoles = ses.getUserRoles();         
                 this.setState({
-                    isLoggedIn: true
-                })
+                    isLoggedIn: !invalid,
+                    invalidCredentials: invalid,
+                    userRoles: (sesUserRoles !== null) ? sesUserRoles : [],
+                    userRolesObj: (sesUserRoles !== null) ? ses.getUserRolesObj() : {},
+                    loading: false
+                })                
             })
             .catch(error => this.setState({ error }));
         }        
@@ -73,7 +98,11 @@ class Main extends Component<IMainProps,IMainState> {
     logout() {
         ses.deleteAuthToken();
         this.setState({
-            isLoggedIn: false
+            username: '',
+            password: '',
+            isLoggedIn: false,
+            invalidCredentials: false,
+            loading: false
         });
     }
 
@@ -95,15 +124,32 @@ class Main extends Component<IMainProps,IMainState> {
 
     render() {
 
-        const { isLoggedIn } = this.state;
+        const username = this.state.username;
+        const isLoggedIn = this.state.isLoggedIn;
+        const invalidCredentials = this.state.invalidCredentials;
+        
+        let loadingDiv = null;
+        if (this.state.loading) {
+            loadingDiv = <div id="loadingDiv">
+                            <div id="innerLoading">
+                                <BeatLoader
+                                    color={'#333'}
+                                    loading={this.state.loading}
+                                />
+                            </div>
+                        </div>;
+        }
+        
+        let alertDiv = (invalidCredentials === true) ? <Col sm={12} className="marginTop-md"><Alert color="danger">Invalid credentials</Alert></Col> : "";
 
         if (isLoggedIn !== true) {
-            return (
+            return (                
                 <div id="mainLoginFormHolder">
+                    {loadingDiv}
                     <Form id="mainLoginForm">
                         <FormGroup row>
                             <Col className="text-center" sm={12}>
-                                <h2 className="site-title"><em className="fa fa-rocket"></em> Attendance Web</h2>
+                                <h2 className="site-title"><em className="fa fa-check-circle"></em> Attendance Web</h2>
                             </Col>
                         </FormGroup>
                         <FormGroup row>                        
@@ -115,10 +161,11 @@ class Main extends Component<IMainProps,IMainState> {
                             <Col sm={12}>
                                 <Input type="password" name="password" id="password" placeholder="Password" onChange={this.changePassword} />
                             </Col>
-                        </FormGroup>                    
+                            {alertDiv}
+                        </FormGroup>                        
                         <FormGroup check row>
                             <Col className="text-center" sm={12}>
-                                <Button color="success" 
+                                <Button color="default" 
                                     disabled={!this.validateInputs()}
                                     onClick={(e: any) => { 
                                         e.preventDefault();
@@ -132,13 +179,15 @@ class Main extends Component<IMainProps,IMainState> {
         }
 
         // Logged user
-        return (
+        return (            
             <HashRouter>
                 <div className="container-fluid">
                     <div className="row">
 
+                        {loadingDiv}
+
                         <nav className="sidebar col-xs-12 col-sm-4 col-lg-3 col-xl-2 bg-faded sidebar-style-1">
-                            <h1 className="site-title"><a href="index.html"><em className="fa fa-rocket"></em> Attendance Web</a></h1>
+                            <h1 className="site-title"><a href="index.html"><em className="fa fa-check-circle"></em> Attendance Web</a></h1>
                             
                             <ul className="nav nav-pills flex-column sidebar-nav">
                                 <li className="nav-item"><NavLink exact to="/"><i className="fa fa-dashboard"></i> Dashboard</NavLink></li>
@@ -152,11 +201,9 @@ class Main extends Component<IMainProps,IMainState> {
                             <header className="page-header row justify-center">
                                 <div className="col-sm-12">                                    
                                     <span className="pull-right">                                        
-                                        <span>user@example.com</span>
+                                        <span>{username}</span>
                                         <span className="marginLeft-md"><i className="fa fa-user-circle fa-lg"></i></span>
-
-                                        <Button color="default" onClick={() => this.logout()}>Logout</Button>
-
+                                        <Button color="default" onClick={() => this.logout()} className="marginLeft-md">Logout</Button>
                                     </span>
                                 </div>                                
                             </header>
@@ -166,6 +213,7 @@ class Main extends Component<IMainProps,IMainState> {
                                     <Route exact path="/" component={Dashboard}/>
                                     <Route path="/students" component={Students}/>
                                     <Route path="/qrcode" component={QRCode}/>
+                                    <Route path="/attendanceLogs/:courseAssigmentId" component={AttendanceLogs}/>
                                 </div>                                
                             </section>
 

@@ -10,6 +10,14 @@ a:hover, a:focus, a:active {
   color: #293a4c;
   text-decoration: none; }
 
+.hidden {
+  display: none!important;
+}
+
+button {
+  cursor: pointer;
+}
+
 .nav-pills .nav-item.show .nav-link, .nav-pills .nav-link.active {
   background-color: #293a4c; }
 .sidebar {
@@ -93,6 +101,32 @@ a.active {
   .marginLeft-lg {
     margin-left: 25px;
   }
+  .marginTop-sm {
+    margin-top: 5px
+  }
+  .marginTop-md {
+    margin-top: 15px
+  }
+  .marginTop-lg {
+    margin-top: 25px
+  }
+
+  #loadingDiv {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 500;
+    background-color: rgba(255,255,255,0.8);
+  }
+
+  #innerLoading {
+    position: fixed;
+    top: 200px;
+    left: 50%;    
+    margin-left: -30px;
+  }
 
   /* Main login ============================================================== */
 
@@ -103,7 +137,7 @@ a.active {
     left: 0;
     right: 0;
     z-index: 1050;
-    background-color: rgba(0,0,0,0.7);
+    background-color:#344861;
   }
 
   #mainLoginForm {
@@ -114,7 +148,12 @@ a.active {
     margin-top: 100px;
     background-color: #f1f1f1;
     padding: 50px 30px;
-    box-sizing: border-box;
+    box-sizing: border-box;    
+    box-shadow: 0 0 4px -1px rgba(0,0,0,0.5);
+  }
+
+  .site-title {
+    color:#344861
   }
 
   /* QRCode ================================================================== */
@@ -129,10 +168,11 @@ a.active {
   }
 
   #qrCodeHolder_inner {
-    position: absolute;
-    left: 50%;    
-    margin-left: -290px;
-    margin-top: 100px;
+    width: 500px;
+    left: 50%;
+    position: absolute;    
+    margin-top: 20px;
+    margin-left: -250px;
   }
 
   #btnHideQRCode {

@@ -1,3 +1,4 @@
 module.exports = {
-    "serverUrl": "https://attendancewebapiuom.azurewebsites.net/" //"http://localhost:24940/"
+    "serverUrl": "https://attendancewebapiuom.azurewebsites.net/" 
+    //"serverUrl": "http://localhost:24940/"
 }
